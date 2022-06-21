@@ -120,8 +120,8 @@ double coder(const char* input_name = "input.txt",
 
     unsigned int bit_len = 0;
     unsigned char letter = 0;
-    char col_letters = leafs.size();
-    fputc(col_letters, output_file);
+    char count_letters = leafs.size();
+    fputc(count_letters, output_file);
 
     // Writing the letters used and their number
     for (int i = 0; i < 256; i++) {
@@ -136,17 +136,17 @@ double coder(const char* input_name = "input.txt",
         character = fgetc(input_file);
         if (!feof(input_file)) {
             std::string s(1, character);
-            if (bit_len + huffmanCode[s].length() <= 8) {
+            if (bit_len + huffmanCode[s].length() <= 8) {//1 B
                 for (int i = 0; i < huffmanCode[s].length(); i++) {
                     letter = letter << 1 | (huffmanCode[s][i] - '0');
                 }
                 bit_len += huffmanCode[s].length();
             }
-            else {
-                for (int i = 0; i < 8 - bit_len; i++) {
+            else {//if 1 B is not enought
+                for (int i = 0; i < 8 - bit_len; i++) {//fill 1 B
                     letter = letter << 1 | (huffmanCode[s][i] - '0');
                 }
-                if (huffmanCode[s].length() - 8 + bit_len >= 8) {
+                if (huffmanCode[s].length() - (8 - bit_len) >= 8) {//if 2 B is not enought
                     int i = 8 - bit_len;
                     while (i + 7 < huffmanCode[s].length()) {
                         k = 0;
@@ -168,7 +168,7 @@ double coder(const char* input_name = "input.txt",
                         len++;
                     }
                 }
-                else {
+                else {//if 2 B is enought
                     len = 0;
                     for (int i = 8 - bit_len; i < huffmanCode[s].length(); i++) {
                         k = k << 1 | (huffmanCode[s][i] - '0');
@@ -179,7 +179,7 @@ double coder(const char* input_name = "input.txt",
                 bit_len = 8;
             }
 
-            if (bit_len == 8) {
+            if (bit_len == 8) {//last 
                 fputc(letter, output_file);
 
                 letter = k;
@@ -218,5 +218,5 @@ double coder(const char* input_name = "input.txt",
 }
 
 int main() {
-    std::cout << coder() << std::endl;  // Print compression ratio
+    std::cout << coder() << std::endl;
 }

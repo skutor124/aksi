@@ -117,9 +117,10 @@ void decoder(const char* input_name = "encoded.txt",
                     if (nodes->L == NULL) {
                         letter = nodes->key[0];
                         if (alfabet[letter] > 0) {
+                            alfabet[letter]--;
                             fputc(letter, output_file);
                             nodes = n->L;
-                            alfabet[letter]--;
+                            
                         }
                     }
                     else {

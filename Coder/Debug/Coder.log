@@ -1,5 +1,5 @@
 ﻿  Coder.cpp
-C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(123,36): warning C4267: инициализация: преобразование из "size_t" в "char"; возможна потеря данных
+C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(123,38): warning C4267: инициализация: преобразование из "size_t" в "char"; возможна потеря данных
 C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(140,35): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(146,35): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(151,34): warning C4018: <: несоответствие типов со знаком и без знака
