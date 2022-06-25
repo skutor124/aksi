@@ -80,7 +80,7 @@ void decoder(const char* input_name = "encoded.txt",
         }
     }
 
-    std::priority_queue<Node, std::vector<Node>, Node> tree;
+    std::priority_queue<Node, std::vector<Node>, Node> tree;// Creating and filling the queue with which the tree will be formed
     for (int i = 0; i < 256; i++) {
         if (alfabet[i] != 0) {
             std::string s(1, static_cast<char>(i));
@@ -100,8 +100,8 @@ void decoder(const char* input_name = "encoded.txt",
         character = fgetc(input_file);
         if (!feof(input_file)) {
             for (int i = 7; i > -1; i--) {
-                if (((character >> i) & 1) == 1) {
-                    if (nodes->R == NULL) {
+                if (((character >> i) & 1) == 1) {//look at the bits of the symbol, depending on the value, go either on the right
+                    if (nodes->R == NULL) {//If we have reached the leaf, write down the symbol
                         letter = nodes->key[0];
                         if (alfabet[letter] > 0) {
                             alfabet[letter]--;
@@ -113,7 +113,7 @@ void decoder(const char* input_name = "encoded.txt",
                         nodes = nodes->R;
                     }
                 }
-                else if (((character >> i) & 1) == 0) {
+                else if (((character >> i) & 1) == 0) {//or on the left branch
                     if (nodes->L == NULL) {
                         letter = nodes->key[0];
                         if (alfabet[letter] > 0) {

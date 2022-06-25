@@ -1,5 +1,7 @@
 ﻿  ArifmCoder.cpp
-C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(59,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(95,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(103,8): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(16,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(103,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(113,8): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(137,34): warning C4267: инициализация: преобразование из "size_t" в "char"; возможна потеря данных
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(270,34): warning C4244: return: преобразование "double" в "float", возможна потеря данных
   ArifmCoder.vcxproj -> C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\Debug\ArifmCoder.exe

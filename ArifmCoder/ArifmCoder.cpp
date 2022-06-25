@@ -1,5 +1,6 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
-
+﻿#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -47,7 +48,7 @@ void bitsANDfollow(unsigned int bit, unsigned int* follow_bits, unsigned int* bi
     }
 }
 
-void ArCoder(const char* input_text = "input.txt", const char* output_text = "encoded.txt")
+void coder(const char* input_text = "input.txt", const char* output_text = "encoded.txt")
 {
     unsigned short* alfabet = new unsigned short[256];
     for (int i = 0; i < 256; i++)
@@ -244,32 +245,32 @@ void ArCoder(const char* input_text = "input.txt", const char* output_text = "en
     fclose(output_file);
 }
 
-void compressValue(const char* input_text = "input.txt", const char* output_text = "encoded.txt")
-{
-    long long file_size = 0;
-    long long compress_size = 0;
+// Finding compression ratio
+float compressRatio(const char* input_name = "input.txt", const char* output_name = "encoded.txt") {
+    uint64_t file_full_size = 0;
+    uint64_t compress_size = 0;
 
-    struct stat s1 {};
-    struct stat s2 {};
+    struct stat sb {};
+    struct stat se {};
 
-    if (!stat(input_text, &s1)) {
-        file_size = s1.st_size;
+    if (!stat(input_name, &sb)) {
+        file_full_size = sb.st_size;
     }
     else {
-        perror("STAT ERROR ");
+        perror("STAT");
     }
-    if (!stat(output_text, &s2)) {
-        compress_size = s2.st_size;
+    if (!stat(output_name, &se)) {
+        compress_size = se.st_size;
     }
     else {
-        perror("STAT ERROR ");
+        perror("STAT");
     }
 
-    cout << "Compress value is: " << (compress_size + 0.0) / file_size << "\n";
+    //std::cout << "Compress ratio is: " << (compress_size + 0.0) / file_full_size << "\n";
+    return (compress_size + 0.0) / file_full_size;
 }
 
-int main()
-{
-    ArCoder();
-    compressValue();
+int main() {
+    coder();
+    std::cout << "Compress ratio is: " << compressRatio() << std::endl;
 }
