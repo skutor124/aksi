@@ -67,7 +67,7 @@ void huffmanCodes(Node* root, std::string  code,
 }
 
 // Coding function
-double coder(const char* input_name = "input.txt",
+void coder(const char* input_name = "input.txt",
     const char* output_name = "encoded.txt") {
     uint64_t* alfabet = new uint64_t[256];
     for (int i = 0; i < 256; i++) {
@@ -89,7 +89,7 @@ double coder(const char* input_name = "input.txt",
     fclose(input_file);
 
     std::priority_queue<Node, std::vector<Node>, Node> leafs;
-    for (int i = 0; i < 256; i++) {  // Create nodes
+    for (int i = 0; i < 256; i++) {  // Creating and filling the queue with which the tree will be formed
         std::cout << i << std::endl;
         if (alfabet[i] != 0) {
             std::string s(1, static_cast<char>(i));
@@ -120,10 +120,10 @@ double coder(const char* input_name = "input.txt",
 
     unsigned int bit_len = 0;
     unsigned char letter = 0;
-    char count_letters = leafs.size();
+    char count_letters = leafs.size();//remember the number of simols used, necessary for the header
     fputc(count_letters, output_file);
 
-    // Writing the letters used and their number
+    // Writing the letters used and their freq, necessary for the header
     for (int i = 0; i < 256; i++) {
         if (alfabet[i] != 0) {
             fputc(static_cast<char>(i), output_file);
@@ -136,42 +136,43 @@ double coder(const char* input_name = "input.txt",
         character = fgetc(input_file);
         if (!feof(input_file)) {
             std::string s(1, character);
-            if (bit_len + huffmanCode[s].length() <= 8) {//1 B
+            if (bit_len + huffmanCode[s].length() <= 8) {////If the character fits into the 1 B completely, then write it down
                 for (int i = 0; i < huffmanCode[s].length(); i++) {
                     letter = letter << 1 | (huffmanCode[s][i] - '0');
                 }
                 bit_len += huffmanCode[s].length();
             }
             else {//if 1 B is not enought
-                for (int i = 0; i < 8 - bit_len; i++) {//fill 1 B
+                for (int i = 0; i < 8 - bit_len; i++) {//write down what fits in 1 B
                     letter = letter << 1 | (huffmanCode[s][i] - '0');
                 }
-                if (huffmanCode[s].length() - (8 - bit_len) >= 8) {//if 2 B is not enought
+                if (huffmanCode[s].length() - (8 - bit_len) >= 8) {//If need to allocate more than 1 new B for a character
                     int i = 8 - bit_len;
-                    while (i + 7 < huffmanCode[s].length()) {
+                    while (i + 7 < huffmanCode[s].length()) {//Starting from the bit where the recording stopped.
+                                                             //While a character can completely fill B
                         k = 0;
 
-                        for (int j = 0; j < 8; j++) {
+                        for (int j = 0; j < 8; j++) {//write it to a new variable
                             k = k << 1 | (huffmanCode[s][i + j] - '0');
                         }
 
                         i += 8;
-                        fputc(letter, output_file);
-                        letter = k;
+                        fputc(letter, output_file);//write the already filled B
+                        letter = k;//change its value to the newly formed one
                     }
 
                     k = 0;
                     len = 0;
 
-                    for (int j = i; j < huffmanCode[s].length(); j++) {
+                    for (int j = i; j < huffmanCode[s].length(); j++) {//write down the remaining
                         k = k << 1 | (huffmanCode[s][j] - '0');
                         len++;
                     }
                 }
-                else {//if 2 B is enought
+                else {//If 1 new B is enough
                     len = 0;
-                    for (int i = 8 - bit_len; i < huffmanCode[s].length(); i++) {
-                        k = k << 1 | (huffmanCode[s][i] - '0');
+                    for (int i = 8 - bit_len; i < huffmanCode[s].length(); i++) {//Starting from the bit where the writing stopped
+                        k = k << 1 | (huffmanCode[s][i] - '0');//Writing the symbol to a new variable
                         len++;
                     }
                 }
@@ -179,7 +180,7 @@ double coder(const char* input_name = "input.txt",
                 bit_len = 8;
             }
 
-            if (bit_len == 8) {//last 
+            if (bit_len == 8) {// if last B is fully filled
                 fputc(letter, output_file);
 
                 letter = k;
@@ -188,8 +189,8 @@ double coder(const char* input_name = "input.txt",
                 len = 0;
             }
         }
-        else if (bit_len < 8) {
-            letter = letter << (8 - bit_len);
+        else if (bit_len < 8) {// if last B is not fully filled
+            letter = letter << (8 - bit_len);//fill it with insignificant zeros
             fputc(letter, output_file);
         }
     }
@@ -197,26 +198,34 @@ double coder(const char* input_name = "input.txt",
     fclose(input_file);
     fclose(output_file);
 
+}
+
+// Finding compression ratio
+float compressRatio(const char* input_name = "input.txt", const char* output_name = "encoded.txt"){
     uint64_t file_full_size = 0;
-    uint64_t commpres_size = 0;
+    uint64_t compress_size = 0;
+
     struct stat sb {};
     struct stat se {};
-    // Finding compression ratio
+
     if (!stat(input_name, &sb)) {
         file_full_size = sb.st_size;
     }
     else {
-        perror("stat");
+        perror("STAT");
     }
     if (!stat(output_name, &se)) {
-        commpres_size = se.st_size;
+        compress_size = se.st_size;
     }
     else {
-        perror("stat");
+        perror("STAT");
     }
-    return (commpres_size + 0.0) / file_full_size;
+
+    //std::cout << "Compress ratio is: " << (compress_size + 0.0) / file_full_size << "\n";
+    return (compress_size + 0.0) / file_full_size;
 }
 
 int main() {
-    std::cout << coder() << std::endl;
+    coder();
+    std::cout<<"Compress ratio is: " << compressRatio()<< std::endl;
 }

@@ -68,7 +68,7 @@ void decoder(const char* input_name = "encoded.txt",
     }
 
     unsigned char character = 0;
-    // Reading the letters used and their number
+    // Reading the letters used and their freq
     for (int i = 0; i < col_letters; i++) {
         character = fgetc(input_file);
         if (!feof(input_file)) {

@@ -3,6 +3,7 @@ C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(123,38): warning C4267: и
 C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(140,35): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(146,35): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(151,34): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(166,39): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(173,49): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(167,39): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(174,49): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\Coder\Coder.cpp(225,34): warning C4244: return: преобразование "double" в "float", возможна потеря данных
   Coder.vcxproj -> C:\Users\skutor\Documents\GitHub\aksi\Coder\Debug\Coder.exe
