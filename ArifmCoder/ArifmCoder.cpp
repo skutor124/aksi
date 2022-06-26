@@ -10,7 +10,7 @@
 using namespace std;
 
 #define code_value_bits 16
-
+//returns the index of the symbol
 int indexOFsymbol(char symbol, vector<pair<char, unsigned int>> vec)
 {
     for (int i = 0; i < vec.size(); i++)
@@ -23,7 +23,7 @@ int indexOFsymbol(char symbol, vector<pair<char, unsigned int>> vec)
 
     return -1;
 }
-
+//puts a bit in the file
 void fput_bit(unsigned int bit, unsigned int* bit_len, unsigned char* file_bit, FILE* output)
 {
     (*file_bit) = (*file_bit) >> 1;
@@ -37,7 +37,7 @@ void fput_bit(unsigned int bit, unsigned int* bit_len, unsigned char* file_bit, 
         (*bit_len) = 8;
     }
 }
-
+//the function enters a sequence of bits into a file
 void bitsANDfollow(unsigned int bit, unsigned int* follow_bits, unsigned int* bit_len, unsigned char* write_bit, FILE* output_file)
 {
     fput_bit(bit, bit_len, write_bit, output_file);
@@ -47,25 +47,22 @@ void bitsANDfollow(unsigned int bit, unsigned int* follow_bits, unsigned int* bi
         fput_bit(!bit, bit_len, write_bit, output_file);
     }
 }
-
+//coder function
 void coder(const char* input_text = "input.txt", const char* output_text = "encoded.txt")
 {
-    unsigned short* alfabet = new unsigned short[256];
-    for (int i = 0; i < 256; i++)
-    {
+    uint64_t* alfabet = new uint64_t[256];
+    for (int i = 0; i < 256; i++) {
         alfabet[i] = 0;
     }
 
     FILE* input_file = fopen(input_text, "rb");
-    if (input_file == nullptr)
-    {
-        puts("ArCoder ERROR: No such file or directory\n");
-        exit(1);
+    if (input_file == nullptr) {
+        throw std::invalid_argument("File not found.");
     }
 
     unsigned char character = 0;
 
-    while (!feof(input_file))
+    while (!feof(input_file))// Read from input file
     {
         character = fgetc(input_file);
         if (!feof(input_file))
@@ -75,29 +72,33 @@ void coder(const char* input_text = "input.txt", const char* output_text = "enco
     }
 
     fclose(input_file);
-
+    //creating a vector: pair - symbol, freq
     vector<pair<char, unsigned int>> vec;
-
     for (int i = 0; i < 256; i++)
     {
         if (alfabet[i] != 0)
         {
-            vec.push_back(make_pair(static_cast<char>(i), alfabet[i]));
+            vec.push_back(make_pair(static_cast<char>(i), alfabet[i]));//for all the characters that are in the text, fill in these pairs
         }
     }
-
+    //sort them
     sort(vec.begin(), vec.end(), [](const pair<char, unsigned int>& left, const pair<char, unsigned int>& right)
         {
-            if (left.second != right.second)
+            if (left.second != right.second)//if frq = then cmp
             {
                 return left.second >= right.second;
             }
 
-            return left.first < right.first;
-        });
+            return left.first < right.first;//symbols
+        });//have a sorted table
+    cout << "------Alphabet------" << endl;
+    for (auto pair : vec)
+    {
+        cout << pair.first << " " << pair.second << endl;
+    }
 
 
-    unsigned short* ranges = new unsigned short[vec.size() + 2];
+    unsigned short* ranges = new unsigned short[vec.size() + 2];//creating int array with intervals
     ranges[0] = 0;
     ranges[1] = 1;
     for (int i = 0; i < vec.size(); i++)
@@ -110,10 +111,25 @@ void coder(const char* input_text = "input.txt", const char* output_text = "enco
         ranges[i + 2] = b;
     }
 
-    if (ranges[vec.size()] > (1 << ((code_value_bits - 2)) - 1))
+    if (ranges[vec.size()] > (1 << ((code_value_bits - 2)) - 1))//the values are not higher than numbers otherwise we will not be able to encode
     {
         puts("ArCoder ERROR: Symbols frequencies are too long");
         exit(1);
+    }
+
+    input_file = fopen(input_text, "rb");
+    FILE* output_file = fopen(output_text, "wb +");
+
+    char count_letters = vec.size();//remember the number of simols used, necessary for the header
+    fputc(count_letters, output_file);
+
+    // Writing the letters used and their freq, necessary for the header
+    for (int i = 0; i < 256; i++) {
+        if (alfabet[i] != 0) {
+            fputc(static_cast<char>(i), output_file);
+            fwrite(reinterpret_cast<const char*>(&alfabet[i]),
+                sizeof(unsigned short), 1, output_file);
+        }
     }
 
     unsigned int low_value = 0;
@@ -131,51 +147,37 @@ void coder(const char* input_text = "input.txt", const char* output_text = "enco
 
     int j = 0;
 
-    input_file = fopen(input_text, "rb");
-    FILE* output_file = fopen(output_text, "wb +");
+    
 
-    char col_letters = vec.size();
-    fputc(col_letters, output_file);
-
-    for (int i = 0; i < 256; i++)
-    {
-        if (alfabet[i] != 0)
-        {
-            fputc(static_cast<char>(i), output_file);
-            fwrite(reinterpret_cast<const char*>(&alfabet[i]),
-                sizeof(unsigned short), 1, output_file);
-        }
-    }
-
-
+    // Compressing the file
     while (!feof(input_file))
     {
         character = fgetc(input_file);
 
         if (!feof(input_file))
         {
-            j = indexOFsymbol(character, vec);
+            j = indexOFsymbol(character, vec);//get symbol index
 
-            high_value = low_value + ranges[j] * diff / divider - 1;
+            high_value = low_value + ranges[j] * diff / divider - 1;//calc new low and high bord
             low_value = low_value + ranges[j - 1] * diff / divider;
 
             for (;;)
             {
-                if (high_value < half)
+                if (high_value < half)//if the high bound in 1 half then write 0
                 {
                     bitsANDfollow(0, &follow_bits,
                         &bit_len, &write_bit, output_file);
                 }
-                else if (low_value >= half)
+                else if (low_value >= half)//if the low bound in 2 half then write 1
                 {
                     bitsANDfollow(1, &follow_bits,
                         &bit_len, &write_bit, output_file);
-                    low_value -= half;
+                    low_value -= half;//change borders
                     high_value -= half;
                 }
-                else if ((low_value >= first_qtr) && (high_value < third_qtr))
+                else if ((low_value >= first_qtr) && (high_value < third_qtr))//if both boundaries in 2 quarters then write the bit conditionally
                 {
-                    follow_bits++;
+                    follow_bits++;//change borders
                     low_value -= first_qtr;
                     high_value -= first_qtr;
                 }
@@ -184,10 +186,11 @@ void coder(const char* input_text = "input.txt", const char* output_text = "enco
                     break;
                 }
 
-                low_value += low_value;
+                low_value += low_value;//and here change borders
                 high_value += high_value + 1;
             }
         }
+        //last symb
         else
         {
             high_value = low_value + ranges[1] * diff / divider - 1;
@@ -223,24 +226,24 @@ void coder(const char* input_text = "input.txt", const char* output_text = "enco
             }
 
             follow_bits++;
-
-            if (low_value < first_qtr)
+            //writing the final bit to a file,
+            if (low_value < first_qtr)//if the lower bound in 1 quarter then 0,
             {
                 bitsANDfollow(0, &follow_bits,
                     &bit_len, &write_bit, output_file);
             }
             else
             {
-                bitsANDfollow(1, &follow_bits,
+                bitsANDfollow(1, &follow_bits,//
                     &bit_len, &write_bit, output_file);
             }
 
-            write_bit >>= bit_len;
+            write_bit >>= bit_len;// write remaining
             fputc(write_bit, output_file);
         }
         diff = high_value - low_value + 1;
     }
-
+    cout << "coding correct\n";
     fclose(input_file);
     fclose(output_file);
 }

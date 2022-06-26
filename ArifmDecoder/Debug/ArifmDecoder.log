@@ -1,5 +1,5 @@
 ﻿  ArifmDecoder.cpp
-C:\Users\skutor\Documents\GitHub\aksi\ArifmDecoder\ArifmDecoder.cpp(61,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\ArifmDecoder\ArifmDecoder.cpp(97,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\ArifmDecoder\ArifmDecoder.cpp(105,8): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\Users\skutor\Documents\GitHub\aksi\ArifmDecoder\ArifmDecoder.cpp(55,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\ArifmDecoder\ArifmDecoder.cpp(92,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\ArifmDecoder\ArifmDecoder.cpp(100,8): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
   ArifmDecoder.vcxproj -> C:\Users\skutor\Documents\GitHub\aksi\ArifmDecoder\Debug\ArifmDecoder.exe

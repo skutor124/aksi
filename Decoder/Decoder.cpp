@@ -174,5 +174,10 @@ unsigned int checker(const char* before_name = "input.txt",
 
 int main() {
     decoder();
-    std::cout << checker() << std::endl;
+    if (!checker()) {
+        std::cout << "Files match" << std::endl;
+    }
+    else {
+        std::cout << "Files doesn't match" << std::endl;
+    }
 }

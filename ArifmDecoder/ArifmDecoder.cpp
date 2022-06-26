@@ -11,64 +11,55 @@ using namespace std;
 
 #define code_value_bits 16
 
-int fget_bit(unsigned char* input_bit, unsigned int* bit_len, FILE* input, unsigned int* useless_bit)
+int fget_bit(unsigned char* input_bit, unsigned int* bit_len, FILE* input, unsigned int* useless_bit)//returns bits from a file
 {
-    if ((*bit_len) == 0)
+    if ((*bit_len) == 0)//if there are no written bits
     {
-        (*input_bit) = fgetc(input);
-        if (feof(input))
+        (*input_bit) = fgetc(input);//then we read the new symbol
+        if (feof(input))//if the file is over, then we write down useless bits
         {
             (*useless_bit)++;
             if ((*useless_bit) > 14)
             {
-                puts("ArDecoder ERROR: Does not possible to decode\n");
-                exit(1);
+                throw invalid_argument("Can't decompress");
             }
         }
         (*bit_len) = 8;
     }
-    int result = (*input_bit) & 1;
+    int result = (*input_bit) & 1;//return last bit
     (*input_bit) >>= 1;
     (*bit_len)--;
     return result;
 }
 
-void decoder(const char* input_text = "encoded.txt", const char* output_text = "output.txt")
-{
+void decoder(const char* input_name = "encoded.txt",
+    const char* output_name = "output.txt") {
     unsigned int* alfabet = new unsigned int[256];
-    for (int i = 0; i < 256; i++)
-    {
+    for (int i = 0; i < 256; i++) {
         alfabet[i] = 0;
     }
-
-    FILE* input = fopen(input_text, "rb");
-    if (input == nullptr)
-    {
-        puts("ArDecoder ERROR: No such file or directory\n");
-        exit(1);
+    FILE* input_file = fopen(input_name, "rb");  // Open input file
+    if (input_file == nullptr) {
+        throw std::invalid_argument("File not found.");
     }
 
     unsigned char col = 0;
     unsigned int col_letters = 0;
-    col = fgetc(input);
-    if (!feof(input))
-    {
-        col_letters = static_cast<unsigned int>(col);
+    col = fgetc(input_file);
+    if (!feof(input_file)) {
+        col_letters = (unsigned int)col;
     }
 
     unsigned char character = 0;
-
-    for (int i = 0; i < col_letters; i++)
-    {
-        character = fgetc(input);
-        if (!feof(input))
-        {
-            fread(reinterpret_cast<char*>(&alfabet[character]), sizeof(unsigned short), 1, input);
+    // Reading the letters used and their freq
+    for (int i = 0; i < col_letters; i++) {
+        character = fgetc(input_file);
+        if (!feof(input_file)) {
+            fread(reinterpret_cast<char*>(&alfabet[character]),
+                sizeof(unsigned short), 1, input_file);
         }
-        else
-        {
-            puts("ArDecoder ERROR: Does not possible to decode\n");
-            exit(1);
+        else {
+            throw invalid_argument("Can't decompress file.");
         }
     }
 
@@ -89,9 +80,13 @@ void decoder(const char* input_text = "encoded.txt", const char* output_text = "
             }
             return left.first < right.first;
         });
+    cout << "------Alphabet------" << endl;
+    for (auto pair : vec)
+    {
+        cout << pair.first << " " << pair.second << endl;
+    }
 
-
-    unsigned short* ranges = new unsigned short[vec.size() + 2];
+    unsigned short* ranges = new unsigned short[vec.size() + 2];//table of intervals
     ranges[0] = 0;
     ranges[1] = 1;
     for (int i = 0; i < vec.size(); i++) {
@@ -121,39 +116,39 @@ void decoder(const char* input_text = "encoded.txt", const char* output_text = "
     unsigned short code_value = 0;
     int tmp = 0;
 
-    FILE* output = fopen(output_text, "wb +");
+    FILE* output = fopen(output_name, "wb +");
     if (output == nullptr)
     {
-        puts("ArDecoder ERROR: Does not open output file\n");
-        exit(1);
+        throw invalid_argument("File not found.");
     }
 
     for (int i = 1; i <= 16; i++)
     {
-        tmp = fget_bit(&input_bit, &bit_len, input, &useless_bit);
+        tmp = fget_bit(&input_bit, &bit_len, input_file, &useless_bit);//get code value
         code_value = 2 * code_value + tmp;
     }
     unsigned int diff = high_value - low_value + 1;
     for (;;)
     {
-        unsigned int freq = static_cast<unsigned int>(((static_cast<unsigned int>(code_value) - low_value + 1) * divider - 1) / diff);
+        unsigned int freq = static_cast<unsigned int>(((static_cast<unsigned int>(code_value) - low_value + 1) * divider - 1) / diff);//calc freq
 
         int j;
 
-        for (j = 1; ranges[j] <= freq; j++) {}
-        high_value = low_value + ranges[j] * diff / divider - 1;
+        for (j = 1; ranges[j] <= freq; j++) {}//find the symbol in the interval table
+        high_value = low_value + ranges[j] * diff / divider - 1;//calc borders
         low_value = low_value + ranges[j - 1] * diff / divider;
 
         for (;;)
         {
-            if (high_value < half) {}
-            else if (low_value >= half)
+            if (high_value < half) {}//if  upper bound in 1 half then do nothing
+
+            else if (low_value >= half)//if lower boundary in the 2nd half, then shift the value of the boundaries and the value of the code by half
             {
                 low_value -= half;
                 high_value -= half;
                 code_value -= half;
             }
-            else if ((low_value >= first_qtr) && (high_value < third_qtr))
+            else if ((low_value >= first_qtr) && (high_value < third_qtr))//if both borders in the second quarter, then shift by a quarter
             {
                 low_value -= first_qtr;
                 high_value -= first_qtr;
@@ -164,23 +159,23 @@ void decoder(const char* input_text = "encoded.txt", const char* output_text = "
                 break;
             }
 
-            low_value += low_value;
+            low_value += low_value;//then change the border and values
             high_value += high_value + 1;
             tmp = 0;
-            tmp = fget_bit(&input_bit, &bit_len, input, &useless_bit);
+            tmp = fget_bit(&input_bit, &bit_len, input_file, &useless_bit);
             code_value += code_value + tmp;
         }
 
-        if (j == 1)
+        if (j == 1)//finish when reach the end of the array of intervals
         {
             break;
         }
 
-        fputc(vec[j - 2].first, output);
+        fputc(vec[j - 2].first, output);//writing decoded character
         diff = high_value - low_value + 1;
     }
-
-    fclose(input);
+    cout << "decoding correct\n";
+    fclose(input_file);
     fclose(output);
 }
 
@@ -224,5 +219,10 @@ unsigned int checker(const char* before_name = "input.txt",
 int main()
 {
     decoder();
-    std::cout << checker() << std::endl;
+    if (!checker()) {
+        std::cout << "Files match" << std::endl;
+    }
+    else {
+        std::cout << "Files doesn't match" << std::endl;
+    }
 }

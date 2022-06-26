@@ -18,7 +18,7 @@ public:
     Node* R;  // Right node
     Node* L;  // Left node
 
-      // Comparison function to be used to order the heap
+      // Comparison function to be used to priority_queue
     bool operator() (const Node& x, const Node& y) {
         return x.size > y.size;
     }

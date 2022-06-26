@@ -1,7 +1,18 @@
 ﻿  ArifmCoder.cpp
 C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(16,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(103,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(113,8): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(137,34): warning C4267: инициализация: преобразование из "size_t" в "char"; возможна потеря данных
-C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(270,34): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(104,23): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(114,8): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(123,36): warning C4267: инициализация: преобразование из "size_t" в "char"; возможна потеря данных
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(273,34): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\utility(249,61): warning C4244: инициализация: преобразование "_Ty" в "_Ty2", возможна потеря данных
+          with
+          [
+              _Ty=unsigned __int64
+          ]
+          and
+          [
+              _Ty2=unsigned int
+          ]
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(81): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::pair<char,unsigned int>::pair<char,unsigned __int64,0>(std::pair<char,unsigned __int64> &&) noexcept"
+C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\ArifmCoder.cpp(81): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::pair<char,unsigned int>::pair<char,unsigned __int64,0>(std::pair<char,unsigned __int64> &&) noexcept"
   ArifmCoder.vcxproj -> C:\Users\skutor\Documents\GitHub\aksi\ArifmCoder\Debug\ArifmCoder.exe
